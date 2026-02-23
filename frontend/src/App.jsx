@@ -4,10 +4,10 @@ function App() {
   const [activities, setActivities] = useState([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [userId, setUserId] = useState(""); // user to post as
+  const [userId, setUserId] = useState("");
   const [users, setUsers] = useState([]);
 
-  // Fetch all users for dropdown
+  // Fetch all users
   useEffect(() => {
     fetch("http://localhost:5000/users")
       .then(res => res.json())
@@ -27,7 +27,7 @@ function App() {
     fetchActivities();
   }, []);
 
-  // Handle creating a new post
+  // Create post
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title || !content || !userId) return alert("Fill all fields!");
@@ -36,7 +36,7 @@ function App() {
       const res = await fetch("http://localhost:5000/activities", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content, userId })
+        body: JSON.stringify({ title, content, userId }),
       });
       const newPost = await res.json();
 
@@ -50,14 +50,20 @@ function App() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Echoes Feed</h1>
-
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-3xl font-bold text-center mb-6 text-purple-700">
+        Echoes Feed
+      </h1>
+      <h1 className="text-4xl font-bold text-red-500">Hello Tailwind</h1>
       {/* Create Post Form */}
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-md mx-auto bg-white p-6 rounded shadow-md mb-8"
+      >
         <select
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
           required
         >
           <option value="">Select User</option>
@@ -67,42 +73,51 @@ function App() {
             </option>
           ))}
         </select>
-        <br />
+
         <input
           type="text"
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
           required
-          style={{ display: "block", margin: "10px 0", width: "300px" }}
         />
+
         <textarea
           placeholder="Content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-4 h-24 focus:outline-none focus:ring-2 focus:ring-purple-500"
           required
-          style={{ display: "block", margin: "10px 0", width: "300px", height: "80px" }}
         />
-        <button type="submit">Create Post</button>
+
+        <button
+          type="submit"
+          className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition"
+        >
+          Create Post
+        </button>
       </form>
 
       {/* Feed */}
-      {activities.length === 0 && <p>No posts yet</p>}
-      {activities.map(activity => (
-        <div
-          key={activity._id}
-          style={{
-            border: "1px solid black",
-            margin: "10px 0",
-            padding: "10px",
-            borderRadius: "5px"
-          }}
-        >
-          <h3>{activity.title}</h3>
-          <p>{activity.content}</p>
-          <small>Posted by: {activity.user?.username || "Unknown"}</small>
-        </div>
-      ))}
+      <div className="max-w-md mx-auto">
+        {activities.length === 0 ? (
+          <p className="text-center text-gray-500">No posts yet</p>
+        ) : (
+          activities.map(activity => (
+            <div
+              key={activity._id}
+              className="bg-white p-4 rounded shadow mb-4 hover:shadow-lg transition"
+            >
+              <h3 className="text-lg font-semibold text-gray-800">{activity.title}</h3>
+              <p className="text-gray-700 mt-2">{activity.content}</p>
+              <small className="text-gray-500 mt-2 block">
+                Posted by: {activity.user?.username || "Unknown"}
+              </small>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
