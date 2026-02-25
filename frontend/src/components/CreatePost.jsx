@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function CreatePost({ users, onPostCreated }) {
+function CreatePost({ users = [], onPostCreated }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [userId, setUserId] = useState("");
